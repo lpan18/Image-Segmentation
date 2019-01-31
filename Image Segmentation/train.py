@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 from model import UNet
 from dataloader import DataLoader
 
+import torch.nn.functional as F
 def train_net(net,
               epochs=5,
               data_dir='data/cells/',
@@ -45,12 +46,20 @@ def train_net(net,
             shape = img.shape
             label = label - 1
             # todo: create image tensor: (N,C,H,W) - (batch size=1,channels=1,height,width)
-
+            img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
+            # target_label = torch.from_numpy(label.reshape(1,1,shape[0],shape[1])).float()
+            target_label = torch.from_numpy(label).float()
             # todo: load image tensor to gpu
-            #if gpu:
+            if gpu:
+                img_torch = img_torch.cuda()
 
             # todo: get prediction and getLoss()
+            pred = net(img_torch)
+            pred_sm = softmax(pred)
+            _,pred_label = torch.max(pred_sm,1)
+            pred_label = pred_label.view(1, 1,shape[0],shape[1])
 
+            loss = getLoss(pred_label, target_label)
             epoch_loss += loss.item()
  
             print('Training sample %d / %d - Loss: %.6f' % (i+1, N_train, loss.item()))
@@ -83,28 +92,37 @@ def train_net(net,
             plt.show()
 
 def getLoss(pred_label, target_label):
+    # print("pred_label size", pred_label.size()) # torch.Size([1, 32, 32])
     p = softmax(pred_label)
     return cross_entropy(p, target_label)
 
 def softmax(input):
     # todo: implement softmax function
+    p = torch.exp(input.float()) / torch.sum(torch.exp(input.float()), 1)
+    # q = F.softmax(input.float(), 1)
+    # print("p 0", p[0])
+    # print("q 0", q[0])
     return p
 
 def cross_entropy(input, targets):
     # todo: implement cross entropy
     # Hint: use the choose function
+    pred = choose(input, targets)
+    ce = torch.mean(torch.sum(- torch.log(softmax(pred)), 1))
     return ce
 
 # Workaround to use numpy.choose() with PyTorch
 def choose(pred_label, true_labels):
     size = pred_label.size()
+    # print("pred_label size", pred_label.size())
+    # print("true_labels size", true_labels.size())
     ind = np.empty([size[2]*size[3],3], dtype=int)
+    # print("ind size", ind.shape) # (1024*3)
     i = 0
     for x in range(size[2]):
         for y in range(size[3]):
             ind[i,:] = [true_labels[x,y], x, y]
             i += 1
-
     pred = pred_label[0,ind[:,0],ind[:,1],ind[:,2]].view(size[2],size[3])
 
     return pred
