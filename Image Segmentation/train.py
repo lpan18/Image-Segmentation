@@ -16,7 +16,9 @@ import matplotlib.pyplot as plt
 from model import UNet
 from dataloader import DataLoader
 
+from torch.autograd import Variable
 import torch.nn.functional as F
+
 def train_net(net,
               epochs=5,
               data_dir='data/cells/',
@@ -47,27 +49,30 @@ def train_net(net,
             label = label - 1
             # todo: create image tensor: (N,C,H,W) - (batch size=1,channels=1,height,width)
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
+            optimizer.zero_grad()
+
             # todo: load image tensor to gpu
             if gpu:
-                img_torch = img_torch.cuda()
+                img_torch = Variable(img_torch.cuda())
 
             # todo: get prediction and getLoss()
-            pred = net(img_torch)
-            pred_sm = softmax(pred)
-            _,pred_label = torch.max(pred_sm,1)
+            pred_label = net(img_torch)
+            output_shape = pred_label.shape
+
+            # pred_sm = softmax(pred)
+            # _,pred_label = torch.max(pred_sm,1)
+            # print("pred_label:", pred_label.shape)
             
-            # fix ouput size not match problem
-            tf = transforms.Compose(
-                        [
-                            transforms.ToPILImage(),
-                            transforms.Resize(shape[0]),
-                            transforms.ToTensor()
-                        ]
-                    )        
-            pred_label = tf(pred_label.float()).unsqueeze(0)
+            # crop target_label
+            crop_start = np.int64((shape[0] - output_shape[2])/2)
+            crop_end = crop_start + output_shape[2]
+            label = label[crop_start:crop_end, crop_start:crop_end]
             target_label = torch.from_numpy(label).float()
-            # print("pred_label: ", pred_label.shape)
-            # print("target_label: ", target_label.shape)
+            if gpu:
+                target_label = Variable(target_label.cuda())
+            
+            print("pred_label: ", pred_label.shape) #torch.Size([1, 2, 116, 116])
+            print("target_label: ", target_label.shape) #torch.Size([116, 116])
             
             loss = getLoss(pred_label, target_label)
             epoch_loss += loss.item()
@@ -75,7 +80,9 @@ def train_net(net,
             print('Training sample %d / %d - Loss: %.6f' % (i+1, N_train, loss.item()))
 
             # optimize weights
-
+            loss.backward()
+            optimizer.step()
+            
         torch.save(net.state_dict(), join(data_dir, 'checkpoints') + '/CP%d.pth' % (epoch + 1))
         print('Checkpoint %d saved !' % (epoch + 1))
         print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
