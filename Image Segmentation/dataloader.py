@@ -37,7 +37,7 @@ class DataLoader():
             # todo: load images and labels
             # hint: scale images between 0 and 1
             # hint: if training takes too long or memory overflow, reduce image size!
-            resized_size = 572
+            resized_size = 300
             # load images
             data_path = self.data_files[current]
             # print("data_path = ", data_path)
@@ -71,7 +71,9 @@ class DataLoader():
                 data_image = data_image.transpose(Image.ROTATE_90)
                 label_image = label_image.transpose(Image.ROTATE_90)
 
-            data_image = np.asarray(data_image, dtype=np.float32) / 255.0   # data_image = (data_image - 127.0) / 128.0 
+            data_image = np.asarray(data_image, dtype=np.float32)
+            min_, max_ = float(np.min(data_image)), float(np.max(data_image))
+            data_image = (data_image - min_) / (max_ - min_)  # normalization
             label_image = np.asarray(label_image, dtype=np.float32)
 
             if will_gamma > 0.5:
@@ -88,7 +90,7 @@ class DataLoader():
         return np.int_(data_length - np.floor(data_length * self.test_percent))
 
 
-# test
+# Test dataloader
 # loader = DataLoader('data/cells/')
 # for i, (img, label) in enumerate(loader):
 #     figs, axes = plt.subplots(1, 2)

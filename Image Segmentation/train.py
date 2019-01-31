@@ -47,8 +47,6 @@ def train_net(net,
             label = label - 1
             # todo: create image tensor: (N,C,H,W) - (batch size=1,channels=1,height,width)
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
-            # target_label = torch.from_numpy(label.reshape(1,1,shape[0],shape[1])).float()
-            target_label = torch.from_numpy(label).float()
             # todo: load image tensor to gpu
             if gpu:
                 img_torch = img_torch.cuda()
@@ -57,8 +55,20 @@ def train_net(net,
             pred = net(img_torch)
             pred_sm = softmax(pred)
             _,pred_label = torch.max(pred_sm,1)
-            pred_label = pred_label.view(1, 1,shape[0],shape[1])
-
+            
+            # fix ouput size not match problem
+            tf = transforms.Compose(
+                        [
+                            transforms.ToPILImage(),
+                            transforms.Resize(shape[0]),
+                            transforms.ToTensor()
+                        ]
+                    )        
+            pred_label = tf(pred_label.float()).unsqueeze(0)
+            target_label = torch.from_numpy(label).float()
+            # print("pred_label: ", pred_label.shape)
+            # print("target_label: ", target_label.shape)
+            
             loss = getLoss(pred_label, target_label)
             epoch_loss += loss.item()
  
@@ -92,7 +102,7 @@ def train_net(net,
             plt.show()
 
 def getLoss(pred_label, target_label):
-    # print("pred_label size", pred_label.size()) # torch.Size([1, 32, 32])
+    # print("pred_label size", pred_label.size()) 
     p = softmax(pred_label)
     return cross_entropy(p, target_label)
 
@@ -114,10 +124,8 @@ def cross_entropy(input, targets):
 # Workaround to use numpy.choose() with PyTorch
 def choose(pred_label, true_labels):
     size = pred_label.size()
-    # print("pred_label size", pred_label.size())
-    # print("true_labels size", true_labels.size())
     ind = np.empty([size[2]*size[3],3], dtype=int)
-    # print("ind size", ind.shape) # (1024*3)
+    print("ind size", ind.shape) 
     i = 0
     for x in range(size[2]):
         for y in range(size[3]):
