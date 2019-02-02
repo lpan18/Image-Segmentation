@@ -29,7 +29,7 @@ def train_net(net,
               lr=0.1,
               val_percent=0.1,
               save_cp=True,
-              gpu=True):
+              gpu=False):
     loader = DataLoader(data_dir)
 
     N_train = loader.n_train()
@@ -70,13 +70,13 @@ def train_net(net,
             # img = img[crop_start:crop_end, crop_start:crop_end]
             target_label = torch.from_numpy(label).float()
             
-            plt.subplot(1, 2, 1)
-            plt.imshow(img*255.)
-            plt.subplot(1, 2, 2)
-            plt.imshow((target_label - 1)*255.)
-            # plt.subplot(1, 3, 3)
-            # plt.imshow(pred_label.cpu().detach().numpy().squeeze()*255.)
-            plt.show()
+            # plt.subplot(1, 2, 1)
+            # plt.imshow(img*255.)
+            # plt.subplot(1, 2, 2)
+            # plt.imshow((target_label - 1)*255.)
+            # # plt.subplot(1, 3, 3)
+            # # plt.imshow(pred_label.cpu().detach().numpy().squeeze()*255.)
+            # plt.show()
 
             if gpu:
                 target_label = Variable(target_label.cuda())
