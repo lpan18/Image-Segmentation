@@ -21,8 +21,8 @@ sigma = 0.5;
 % sigma = 0.5;
 
 % Load image
-% I = imread('images/dental.png');
-I = imread('images/star.png');
+% I = imread('images/star.png');
+I = imread('images/circle.jpg');
 if (ndims(I) == 3)
     I = rgb2gray(I);
 end
@@ -35,7 +35,7 @@ I_smooth = double(imgaussfilt(I, sigma));
 Eext = getExternalEnergy(I_smooth,Wline,Wedge,Wterm);
 
 % Calculate matrix A^-1 for the iteration
-Ainv = getInternalEnergyMatrix(size(x,2), alpha, beta, gamma);
+Ainv = getInternalEnergyMatrixBonus(size(x,2), alpha, beta, gamma);
 disp(size(Ainv))
 disp(size(x))
 % Iterate and update positions

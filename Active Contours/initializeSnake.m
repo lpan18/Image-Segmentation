@@ -12,13 +12,13 @@ numOfPts = size(P,2) + 1;
 P(:,numOfPts) = P(:,1);  % copy the first point to end 
 
 % Interpolate
-t = 1:numOfPts;  %adding another axis t
+k = 1:numOfPts;  %adding another axis k
 stepSize = 0.1;
-ts = 1:stepSize:numOfPts;
-Ps = spline(t,P,ts);
+kstep = 1:stepSize:numOfPts;
+Pstep = spline(k,P,kstep);
 
-x = Ps(1,:);
-y = Ps(2,:); 
+x = Pstep(1,:);
+y = Pstep(2,:); 
 
 % Clamp points to be inside of image
 [imgHeight, imgWidth] = size(I);

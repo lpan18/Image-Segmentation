@@ -75,11 +75,9 @@ class DataLoader():
             min_, max_ = float(np.min(data_image)), float(np.max(data_image))
             data_image = (data_image - min_) / (max_ - min_)  # normalization
             label_image = np.asarray(label_image, dtype=np.float32)
-
             if will_gamma > 0.5:
                 data_image = data_image ** (1 / gamma) * 255
-                label_image = label_image ** (1 / gamma) * 255
-
+                label_image = label_image ** (1 / gamma)
             yield (data_image, label_image)
 
     def setMode(self, mode):

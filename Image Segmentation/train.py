@@ -26,7 +26,7 @@ def train_net(net,
               lr=0.1,
               val_percent=0.1,
               save_cp=True,
-              gpu=False):
+              gpu=True):
     loader = DataLoader(data_dir)
 
     N_train = loader.n_train()
@@ -58,10 +58,6 @@ def train_net(net,
             # todo: get prediction and getLoss()
             pred_label = net(img_torch)
             output_shape = pred_label.shape
-
-            # pred_sm = softmax(pred)
-            # _,pred_label = torch.max(pred_sm,1)
-            # print("pred_label:", pred_label.shape)
             
             # crop target_label
             crop_start = np.int64((shape[0] - output_shape[2])/2)
@@ -71,8 +67,8 @@ def train_net(net,
             if gpu:
                 target_label = Variable(target_label.cuda())
             
-            print("pred_label: ", pred_label.shape) #torch.Size([1, 2, 116, 116])
-            print("target_label: ", target_label.shape) #torch.Size([116, 116])
+            # print("pred_label: ", pred_label.shape) #torch.Size([1, 2, 116, 116])
+            # print("target_label: ", target_label.shape) #torch.Size([116, 116])
             
             loss = getLoss(pred_label, target_label)
             epoch_loss += loss.item()
@@ -82,10 +78,11 @@ def train_net(net,
             # optimize weights
             loss.backward()
             optimizer.step()
-            
-        torch.save(net.state_dict(), join(data_dir, 'checkpoints') + '/CP%d.pth' % (epoch + 1))
-        print('Checkpoint %d saved !' % (epoch + 1))
-        print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
+
+        if((epoch + 1) % 10 == 0) :   
+            torch.save(net.state_dict(), join(data_dir, 'checkpoints') + '/CP%d.pth' % (epoch + 1))
+            print('Checkpoint %d saved !' % (epoch + 1))
+            print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
 
     # displays test images with original and predicted masks after training
     loader.setMode('test')
@@ -109,42 +106,42 @@ def train_net(net,
             plt.show()
 
 def getLoss(pred_label, target_label):
-    # print("pred_label size", pred_label.size()) 
     p = softmax(pred_label)
     return cross_entropy(p, target_label)
 
 def softmax(input):
     # todo: implement softmax function
     p = torch.exp(input.float()) / torch.sum(torch.exp(input.float()), 1)
-    # q = F.softmax(input.float(), 1)
+    # p1 = F.softmax(input.float(), 1)
     # print("p 0", p[0])
-    # print("q 0", q[0])
+    # print("p1 0", p1[0])
     return p
 
 def cross_entropy(input, targets):
     # todo: implement cross entropy
     # Hint: use the choose function
     pred = choose(input, targets)
-    ce = torch.mean(torch.sum(- torch.log(softmax(pred)), 1))
+    ce = torch.mean(-torch.log(pred))
+    # ce1 = F.cross_entropy(input.contiguous().view(-1,2), targets.contiguous().view(-1).long())
+    # print("ce: ", ce)
+    # print("ce1: ", ce1)
     return ce
 
 # Workaround to use numpy.choose() with PyTorch
 def choose(pred_label, true_labels):
     size = pred_label.size()
     ind = np.empty([size[2]*size[3],3], dtype=int)
-    print("ind size", ind.shape) 
     i = 0
     for x in range(size[2]):
         for y in range(size[3]):
             ind[i,:] = [true_labels[x,y], x, y]
             i += 1
     pred = pred_label[0,ind[:,0],ind[:,1],ind[:,2]].view(size[2],size[3])
-
     return pred
     
 def get_args():
     parser = OptionParser()
-    parser.add_option('-e', '--epochs', dest='epochs', default=5, type='int', help='number of epochs')
+    parser.add_option('-e', '--epochs', dest='epochs', default=100, type='int', help='number of epochs')
     parser.add_option('-c', '--n-classes', dest='n_classes', default=2, type='int', help='number of classes')
     parser.add_option('-d', '--data-dir', dest='data_dir', default='data/cells/', help='data directory')
     parser.add_option('-g', '--gpu', action='store_true', dest='gpu', default=False, help='use cuda')
