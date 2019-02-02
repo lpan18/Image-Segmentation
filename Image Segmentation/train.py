@@ -19,6 +19,9 @@ from dataloader import DataLoader
 from torch.autograd import Variable
 import torch.nn.functional as F
 
+WILL_TRAIN = True
+WILL_TEST = False
+
 def train_net(net,
               epochs=5,
               data_dir='data/cells/',
@@ -49,21 +52,32 @@ def train_net(net,
             label = label - 1
             # todo: create image tensor: (N,C,H,W) - (batch size=1,channels=1,height,width)
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
-            optimizer.zero_grad()
 
             # todo: load image tensor to gpu
             if gpu:
                 img_torch = Variable(img_torch.cuda())
-
+            
+            optimizer.zero_grad()
             # todo: get prediction and getLoss()
             pred_label = net(img_torch)
             output_shape = pred_label.shape
             
-            # crop target_label
+            # # crop target_label
             crop_start = np.int64((shape[0] - output_shape[2])/2)
             crop_end = crop_start + output_shape[2]
             label = label[crop_start:crop_end, crop_start:crop_end]
+            # img = img_torch.numpy().squeeze().squeeze()
+            # img = img[crop_start:crop_end, crop_start:crop_end]
             target_label = torch.from_numpy(label).float()
+            
+            plt.subplot(1, 2, 1)
+            plt.imshow(img*255.)
+            plt.subplot(1, 2, 2)
+            plt.imshow((target_label - 1)*255.)
+            # plt.subplot(1, 3, 3)
+            # plt.imshow(pred_label.cpu().detach().numpy().squeeze()*255.)
+            plt.show()
+
             if gpu:
                 target_label = Variable(target_label.cuda())
             
@@ -79,28 +93,40 @@ def train_net(net,
             loss.backward()
             optimizer.step()
 
-        if((epoch + 1) % 10 == 0) :   
+        if((epoch + 1) % 1 == 0) :   
             torch.save(net.state_dict(), join(data_dir, 'checkpoints') + '/CP%d.pth' % (epoch + 1))
             print('Checkpoint %d saved !' % (epoch + 1))
             print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
 
-    # displays test images with original and predicted masks after training
+# displays test images with original and predicted masks 
+def test_net(testNet, 
+            gpu=True,
+            data_dir='data/cells/'):
+    loader = DataLoader(data_dir)
     loader.setMode('test')
-    net.eval()
+    testNet.eval()
+
     with torch.no_grad():
         for _, (img, label) in enumerate(loader):
             shape = img.shape
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
             if gpu:
                 img_torch = img_torch.cuda()
-            pred = net(img_torch)
+            pred = testNet(img_torch)
             pred_sm = softmax(pred)
             _,pred_label = torch.max(pred_sm,1)
+            result = pred_label.cpu().detach().numpy().squeeze()*255
+            print(result)
 
+            # for i in range(pred_label.shape[0]):
+            #     for j in range(pred_label.shape[0]):
+            #         if pred_label[i][j] != 1:
+            #             print("i=", i, " j=", j, "pred_label[i][j]", pred_label[i][j])
+                
             plt.subplot(1, 3, 1)
             plt.imshow(img*255.)
             plt.subplot(1, 3, 2)
-            plt.imshow((label-1)*255.)
+            plt.imshow((label - 1)*255.)
             plt.subplot(1, 3, 3)
             plt.imshow(pred_label.cpu().detach().numpy().squeeze()*255.)
             plt.show()
@@ -141,7 +167,7 @@ def choose(pred_label, true_labels):
     
 def get_args():
     parser = OptionParser()
-    parser.add_option('-e', '--epochs', dest='epochs', default=100, type='int', help='number of epochs')
+    parser.add_option('-e', '--epochs', dest='epochs', default=5, type='int', help='number of epochs')
     parser.add_option('-c', '--n-classes', dest='n_classes', default=2, type='int', help='number of classes')
     parser.add_option('-d', '--data-dir', dest='data_dir', default='data/cells/', help='data directory')
     parser.add_option('-g', '--gpu', action='store_true', dest='gpu', default=False, help='use cuda')
@@ -163,8 +189,17 @@ if __name__ == '__main__':
         net.cuda()
         cudnn.benchmark = True
 
-    train_net(net=net,
-        epochs=args.epochs,
-        n_classes=args.n_classes,
-        gpu=args.gpu,
-        data_dir=args.data_dir)
+    if WILL_TRAIN:
+        train_net(net=net,
+            epochs=args.epochs,
+            n_classes=args.n_classes,
+            gpu=args.gpu,
+            data_dir=args.data_dir)
+
+    if WILL_TEST:
+        testNet = UNet(n_classes=args.n_classes)
+        state_dict = torch.load('data/cells/checkpoints/CP5.pth')
+        testNet.load_state_dict(state_dict)
+        test_net(testNet=testNet, 
+            gpu=args.gpu,
+            data_dir=args.data_dir)

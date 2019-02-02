@@ -33,12 +33,12 @@ class DataLoader():
             endId = len(self.data_files)
 
         while current < endId:
-            current += 1
             # todo: load images and labels
             # hint: scale images between 0 and 1
             # hint: if training takes too long or memory overflow, reduce image size!
             resized_size = 300
             # load images
+            print("current", current)
             data_path = self.data_files[current]
             # print("data_path = ", data_path)
             data_image = Image.open(data_path)
@@ -49,11 +49,13 @@ class DataLoader():
             label_image = Image.open(label_path)
             label_image = label_image.resize((resized_size, resized_size))
 
+            current += 1
+
             # data augumentation: flip, zoom, rotate, gamma correction
-            will_flip = random.uniform(0, 1)
-            will_zoom = random.uniform(0, 1)
-            will_rotate = random.uniform(0, 1)
-            will_gamma = random.uniform(0, 1)
+            will_flip = 0#random.uniform(0, 1)
+            will_zoom = 0#random.uniform(0, 1)
+            will_rotate = 0#random.uniform(0, 1)
+            will_gamma = 0#random.uniform(0, 1)
 
             crop_ratio = 0.8
             crop_start = resized_size*(1-crop_ratio)/2
@@ -71,12 +73,12 @@ class DataLoader():
                 data_image = data_image.transpose(Image.ROTATE_90)
                 label_image = label_image.transpose(Image.ROTATE_90)
 
-            data_image = np.asarray(data_image, dtype=np.float32)
-            min_, max_ = float(np.min(data_image)), float(np.max(data_image))
-            data_image = (data_image - min_) / (max_ - min_)  # normalization
+            data_image = np.asarray(data_image, dtype=np.float32) / 255.
+            # min_, max_ = float(np.min(data_image)), float(np.max(data_image))
+            # data_image = (data_image - min_) / (max_ - min_)  # normalization
             label_image = np.asarray(label_image, dtype=np.float32)
             if will_gamma > 0.5:
-                data_image = data_image ** (1 / gamma) * 255
+                data_image = data_image ** (1 / gamma) * 255.
                 label_image = label_image ** (1 / gamma)
             yield (data_image, label_image)
 

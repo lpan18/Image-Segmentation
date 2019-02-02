@@ -54,10 +54,10 @@ class downStep(nn.Module):
         self.downConv = nn.Sequential(
             nn.Conv2d(inC, outC, 3),
             nn.ReLU(inplace=True),
-            nn.BatchNorm2d(outC), 
+            # nn.BatchNorm2d(outC), 
             nn.Conv2d(outC, outC, 3),
             nn.ReLU(inplace=True),
-            nn.BatchNorm2d(outC),
+            # nn.BatchNorm2d(outC),
         )
 
     def forward(self, x):
@@ -76,10 +76,10 @@ class upStep(nn.Module):
             self.upConv = nn.Sequential(
                 nn.Conv2d(inC, outC, 3),
                 nn.ReLU(inplace=True),
-                nn.BatchNorm2d(outC), 
+                # nn.BatchNorm2d(outC), 
                 nn.Conv2d(outC, outC, 3),
                 nn.ReLU(inplace=True),
-                nn.BatchNorm2d(outC),
+                # nn.BatchNorm2d(outC),
             )
         # else:
         #     self.upConv = nn.Conv2d(inC, outC, 1)
