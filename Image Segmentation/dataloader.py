@@ -6,7 +6,7 @@ import random
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
-from scipy.ndimage.filters import gaussian_filter
+# from scipy.ndimage.filters import gaussian_filter
 
 class DataLoader():
     def __init__(self, root_dir='data', batch_size=2, test_percent=.1):
@@ -106,8 +106,8 @@ class DataLoader():
             crop_ratio = 0.9
         elif zoomOption == 2:
             crop_ratio = 0.8
-        crop_start = resized_size*(1-crop_ratio)/2
-        crop_size = resized_size*crop_ratio
+        crop_start = int(resized_size*(1-crop_ratio)/2)
+        crop_size = int(resized_size*crop_ratio)
         crop_pos= (crop_start,crop_start,crop_start+crop_size,crop_start+crop_size)
         image = image.crop(crop_pos).resize((resized_size, resized_size))
         return image
@@ -154,11 +154,11 @@ class DataLoader():
 
 
 # Test dataloader
-# loader = DataLoader('data/cells/')
-# for i, (img, label) in enumerate(loader):
-#     figs, axes = plt.subplots(1, 2)
-#     axes[0].imshow(img)
-#     axes[1].imshow(label)
-#     plt.show()
+loader = DataLoader('data/cells/')
+for i, (img, label) in enumerate(loader):
+    figs, axes = plt.subplots(1, 2)
+    axes[0].imshow(img)
+    axes[1].imshow(label)
+    plt.show()
 
 
