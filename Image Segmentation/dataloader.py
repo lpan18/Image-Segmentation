@@ -2,14 +2,15 @@ import os
 from os.path import isdir, exists, abspath, join
 
 import random
-
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
-# from scipy.ndimage.filters import gaussian_filter
+
+from scipy.ndimage.filters import gaussian_filter
+from scipy.ndimage.interpolation import map_coordinates
 
 class DataLoader():
-    def __init__(self, root_dir='data', batch_size=2, test_percent=.1):
+    def __init__(self, root_dir='data/cells/', batch_size=1, test_percent=.1):
         self.mode = 'train'
         self.batch_size = batch_size
         self.test_percent = test_percent
@@ -61,13 +62,15 @@ class DataLoader():
             rotateOption = random.randint(0,3)
             # gamma {0: 0, 1: 1.5, 2: 1.8, 3: 2.2}            
             gammaOption = random.randint(0,3)
-            # elastic {0: 0, 1: distort} 
-            # elasticOption = random.randint(0,1)
+            # elastic {0: none, 1: distort} 
+            elasticOption = random.randint(0,1)
 
             data_image = self.__flip(data_image, flipOption)
             label_image = self.__flip(label_image, flipOption)
+            
             data_image = self.__zoom(data_image, zoomOption)
             label_image = self.__zoom(label_image, zoomOption)
+            
             data_image = self.__rotate(data_image, rotateOption)
             label_image = self.__rotate(label_image, rotateOption)
             
@@ -79,7 +82,10 @@ class DataLoader():
             
             data_image = self.__gamma(data_image, gammaOption) #* 255.
             label_image = self.__gamma(label_image, gammaOption)
-
+            
+            data_image = self.__elastic_deform(data_image, elasticOption)
+            label_image = self.__elastic_deform(label_image, elasticOption)
+            
             yield (data_image, label_image)
 
     def setMode(self, mode):
@@ -133,24 +139,21 @@ class DataLoader():
         image = image ** (1 / gamma)
         return image
 
+    def __elastic_deform(self, image, elasticOption):
+        if elasticOption == 1:
+            alpha=34
+            sigma = random.randint(6, 12)
+            random_state=None
+            if random_state is None:
+                random_state = np.random.RandomState(None)
+            shape = image.shape
+            dx = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
+            dy = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
+            x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
+            indices = np.reshape(y+dy, (-1, 1)), np.reshape(x+dx, (-1, 1))
+            image = map_coordinates(image, indices, order=1, mode='reflect').reshape(image.shape)
+        return image
 
-    # def __elastic_deform(self, image, elasticOption):
-    #     pad_size=30,
-    #     sigma = randint(6, 12)
-    #     sigma = 4, alpha = 34
-    #     image_size = int(image.shape[0])
-    #     image = np.pad(image, pad_size, mode="symmetric")
-    #     seed = random.randint(1, 100)
-    #     random_state = np.random.RandomState(seed)
-    #     shape = image.shape
-    #     dx = gaussian_filter((random_state.rand(*shape) * 2 - 1),
-    #                         sigma, mode="constant", cval=0) * alpha
-    #     dy = gaussian_filter((random_state.rand(*shape) * 2 - 1),
-    #                         sigma, mode="constant", cval=0) * alpha
-
-    #     x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
-    #     indices = np.reshape(y+dy, (-1, 1)), np.reshape(x+dx, (-1, 1))
-    #     return cropping(map_coordinates(image, indices, order=1).reshape(shape), 512, pad_size, pad_size), seed
 
 
 # Test dataloader
@@ -160,5 +163,6 @@ for i, (img, label) in enumerate(loader):
     axes[0].imshow(img)
     axes[1].imshow(label)
     plt.show()
+    print(i)
 
 
