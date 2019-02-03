@@ -18,6 +18,21 @@ class UNet(nn.Module):
         self.conv8 = upStep(256, 128)
         self.conv9 = upStep(128, 64)
         self.conv10 = nn.Conv2d(64, n_classes, 1)  # last convolutional layer 
+        
+        def init_with_xavier(m):
+            if isinstance(m, nn.Conv2d):
+                nn.init.xavier_uniform_(m.weight)
+        self.conv1.apply(init_with_xavier)
+        self.conv2.apply(init_with_xavier)
+        self.conv3.apply(init_with_xavier)
+        self.conv4.apply(init_with_xavier)
+        self.conv5.apply(init_with_xavier)
+        self.conv6.apply(init_with_xavier)
+        self.conv7.apply(init_with_xavier)
+        self.conv8.apply(init_with_xavier)
+        self.conv9.apply(init_with_xavier)
+        self.conv10.apply(init_with_xavier)
+
 
     def forward(self, x):
         # todo
@@ -53,11 +68,11 @@ class downStep(nn.Module):
         # todo
         self.downConv = nn.Sequential(
             nn.Conv2d(inC, outC, 3),
+            nn.BatchNorm2d(outC), 
             nn.ReLU(inplace=True),
-            # nn.BatchNorm2d(outC), 
             nn.Conv2d(outC, outC, 3),
+            nn.BatchNorm2d(outC),
             nn.ReLU(inplace=True),
-            # nn.BatchNorm2d(outC),
         )
 
     def forward(self, x):
@@ -75,11 +90,11 @@ class upStep(nn.Module):
             self.uppooling = nn.ConvTranspose2d(inC, outC, 2, stride=2)
             self.upConv = nn.Sequential(
                 nn.Conv2d(inC, outC, 3),
+                nn.BatchNorm2d(outC), 
                 nn.ReLU(inplace=True),
-                # nn.BatchNorm2d(outC), 
                 nn.Conv2d(outC, outC, 3),
+                nn.BatchNorm2d(outC),
                 nn.ReLU(inplace=True),
-                # nn.BatchNorm2d(outC),
             )
         # else:
         #     self.upConv = nn.Conv2d(inC, outC, 1)

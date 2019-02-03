@@ -19,8 +19,8 @@ from dataloader import DataLoader
 from torch.autograd import Variable
 import torch.nn.functional as F
 
-WILL_TRAIN = False
-WILL_TEST = True
+WILL_TRAIN = True
+WILL_TEST = False
 
 def train_net(net,
               epochs=5,
@@ -56,7 +56,6 @@ def train_net(net,
             # todo: load image tensor to gpu
             if gpu:
                 img_torch = Variable(img_torch.cuda())
-            
             optimizer.zero_grad()
             # todo: get prediction and getLoss()
             pred_label = net(img_torch)
@@ -137,11 +136,10 @@ def cross_entropy(input, targets):
     delta_x = input.shape[2] - targets.shape[0] 
     delta_y = input.shape[3] - targets.shape[1]
     targets = F.pad(targets, pad=(delta_x // 2, delta_y // 2, delta_x // 2, delta_y // 2), mode='constant', value=0)
-    pred = choose(input, targets)
-    ce = torch.mean(-torch.log(pred))
-    # ce1 = F.cross_entropy(input.contiguous().view(-1,2), targets.contiguous().view(-1).long())
+    # pred = choose(input, targets)
+    # ce = torch.mean(-torch.log(pred))
+    ce = F.cross_entropy(input.contiguous().view(-1,2), targets.contiguous().view(-1).long())
     # print("ce: ", ce)
-    # print("ce1: ", ce1)
     return ce
 
 # Workaround to use numpy.choose() with PyTorch

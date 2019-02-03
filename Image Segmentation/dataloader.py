@@ -4,7 +4,7 @@ from os.path import isdir, exists, abspath, join
 import random
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage.interpolation import map_coordinates
@@ -38,7 +38,7 @@ class DataLoader():
             # todo: load images and labels
             # hint: scale images between 0 and 1
             # hint: if training takes too long or memory overflow, reduce image size!
-            resized_size = 300
+            resized_size = 572
             # load images
             data_path = self.data_files[current]
             # print("data_path = ", data_path)
