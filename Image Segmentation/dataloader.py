@@ -40,7 +40,6 @@ class DataLoader():
             # hint: if training takes too long or memory overflow, reduce image size!
             resized_size = 300
             # load images
-            print("current", current)
             data_path = self.data_files[current]
             # print("data_path = ", data_path)
             data_image = Image.open(data_path)
@@ -56,14 +55,14 @@ class DataLoader():
             # data augumentation
             # flip {0: none, 1: horizontal, 2: vertical, 3: both}
             flipOption = random.randint(0,3)
-            # zoom {0: none, 1: 1/0.9, 2: 1/0.8}
+            # zoom {0: none, 1: 1/0.95, 2: 1/0.9}
             zoomOption = random.randint(0,2)
             # rotate {0: 0, 1: 90, 2: 180, 3: 270}            
             rotateOption = random.randint(0,3)
             # gamma {0: 0, 1: 1.5, 2: 1.8, 3: 2.2}            
             gammaOption = random.randint(0,3)
             # elastic {0: none, 1: distort} 
-            elasticOption = random.randint(0,1)
+            elasticOption = 1#random.randint(0,1)
 
             data_image = self.__flip(data_image, flipOption)
             label_image = self.__flip(label_image, flipOption)
@@ -74,18 +73,20 @@ class DataLoader():
             data_image = self.__rotate(data_image, rotateOption)
             label_image = self.__rotate(label_image, rotateOption)
             
-            # normalization
+            # # normalization
             data_image = np.asarray(data_image, dtype=np.float32) / 255.
-            # min_, max_ = float(np.min(data_image)), float(np.max(data_image))
-            # data_image = (data_image - min_) / (max_ - min_)  
+            # # min_, max_ = float(np.min(data_image)), float(np.max(data_image))
+            # # data_image = (data_image - min_) / (max_ - min_)  
             label_image = np.asarray(label_image, dtype=np.float32)
             
-            data_image = self.__gamma(data_image, gammaOption) #* 255.
+            data_image = self.__gamma(data_image, gammaOption)
             label_image = self.__gamma(label_image, gammaOption)
             
             data_image = self.__elastic_deform(data_image, elasticOption)
             label_image = self.__elastic_deform(label_image, elasticOption)
             
+            # print("data_image", data_image[0])
+            # print("label_image", label_image[0])
             yield (data_image, label_image)
 
     def setMode(self, mode):
@@ -109,9 +110,9 @@ class DataLoader():
         resized_size, _ = image.size
         crop_ratio = 1
         if zoomOption == 1:
-            crop_ratio = 0.9
+            crop_ratio = 0.95
         elif zoomOption == 2:
-            crop_ratio = 0.8
+            crop_ratio = 0.9
         crop_start = int(resized_size*(1-crop_ratio)/2)
         crop_size = int(resized_size*crop_ratio)
         crop_pos= (crop_start,crop_start,crop_start+crop_size,crop_start+crop_size)
@@ -151,18 +152,18 @@ class DataLoader():
             dy = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
             x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
             indices = np.reshape(y+dy, (-1, 1)), np.reshape(x+dx, (-1, 1))
-            image = map_coordinates(image, indices, order=1, mode='reflect').reshape(image.shape)
-        return image
+            distort_image = map_coordinates(image, indices, order=1, mode='reflect').reshape(image.shape)
+        return distort_image
 
 
 
 # Test dataloader
-loader = DataLoader('data/cells/')
-for i, (img, label) in enumerate(loader):
-    figs, axes = plt.subplots(1, 2)
-    axes[0].imshow(img)
-    axes[1].imshow(label)
-    plt.show()
-    print(i)
+# loader = DataLoader('data/cells/')
+# for i, (img, label) in enumerate(loader):
+#     figs, axes = plt.subplots(1, 2)
+#     axes[0].imshow(img)
+#     axes[1].imshow(label)
+#     plt.show()
+#     break
 
 

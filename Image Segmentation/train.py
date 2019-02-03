@@ -19,8 +19,8 @@ from dataloader import DataLoader
 from torch.autograd import Variable
 import torch.nn.functional as F
 
-WILL_TRAIN = True
-WILL_TEST = False
+WILL_TRAIN = False
+WILL_TEST = True
 
 def train_net(net,
               epochs=5,
@@ -60,29 +60,14 @@ def train_net(net,
             optimizer.zero_grad()
             # todo: get prediction and getLoss()
             pred_label = net(img_torch)
-            output_shape = pred_label.shape
-            
             # # crop target_label
-            crop_start = np.int64((shape[0] - output_shape[2])/2)
-            crop_end = crop_start + output_shape[2]
-            label = label[crop_start:crop_end, crop_start:crop_end]
-            # img = img_torch.numpy().squeeze().squeeze()
-            # img = img[crop_start:crop_end, crop_start:crop_end]
+            # crop_start = np.int64((shape[0] - pred_label.shape[2])/2)
+            # crop_end = crop_start + pred_label.shape[2]
+            # label = label[crop_start:crop_end, crop_start:crop_end]
             target_label = torch.from_numpy(label).float()
-            
-            # plt.subplot(1, 2, 1)
-            # plt.imshow(img*255.)
-            # plt.subplot(1, 2, 2)
-            # plt.imshow((target_label - 1)*255.)
-            # # plt.subplot(1, 3, 3)
-            # # plt.imshow(pred_label.cpu().detach().numpy().squeeze()*255.)
-            # plt.show()
 
             if gpu:
                 target_label = Variable(target_label.cuda())
-            
-            # print("pred_label: ", pred_label.shape) #torch.Size([1, 2, 116, 116])
-            # print("target_label: ", target_label.shape) #torch.Size([116, 116])
             
             loss = getLoss(pred_label, target_label)
             epoch_loss += loss.item()
@@ -116,8 +101,8 @@ def test_net(testNet,
             pred_sm = softmax(pred)
             _,pred_label = torch.max(pred_sm,1)
             result = pred_label.cpu().detach().numpy().squeeze()*255
-            print(result)
-
+            # == test ==
+            # print(result)
             # for i in range(pred_label.shape[0]):
             #     for j in range(pred_label.shape[0]):
             #         if pred_label[i][j] != 1:
@@ -146,6 +131,12 @@ def softmax(input):
 def cross_entropy(input, targets):
     # todo: implement cross entropy
     # Hint: use the choose function
+    # using pad to crop targets
+    # input torch.Size([1, 2, 116, 116])
+    # targets torch.Size([300, 300])
+    delta_x = input.shape[2] - targets.shape[0] 
+    delta_y = input.shape[3] - targets.shape[1]
+    targets = F.pad(targets, pad=(delta_x // 2, delta_y // 2, delta_x // 2, delta_y // 2), mode='constant', value=0)
     pred = choose(input, targets)
     ce = torch.mean(-torch.log(pred))
     # ce1 = F.cross_entropy(input.contiguous().view(-1,2), targets.contiguous().view(-1).long())
@@ -198,7 +189,7 @@ if __name__ == '__main__':
 
     if WILL_TEST:
         testNet = UNet(n_classes=args.n_classes)
-        state_dict = torch.load('data/cells/checkpoints/CP5.pth')
+        state_dict = torch.load('data/cells/checkpoints/CP2.pth')
         testNet.load_state_dict(state_dict)
         test_net(testNet=testNet, 
             gpu=args.gpu,
