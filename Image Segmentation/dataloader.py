@@ -33,12 +33,11 @@ class DataLoader():
         elif self.mode == 'test':
             current = n_train
             endId = len(self.data_files)
-
         while current < endId:
             # todo: load images and labels
             # hint: scale images between 0 and 1
             # hint: if training takes too long or memory overflow, reduce image size!
-            resized_size = 572
+            resized_size = 300 #572
             # load images
             data_path = self.data_files[current]
             # print("data_path = ", data_path)
@@ -54,15 +53,15 @@ class DataLoader():
 
             # data augumentation
             # flip {0: none, 1: horizontal, 2: vertical, 3: both}
-            flipOption = random.randint(0,3)
+            flipOption = 0#random.randint(0,3)
             # zoom {0: none, 1: 1/0.95, 2: 1/0.9}
-            zoomOption = random.randint(0,2)
+            zoomOption = 0#random.randint(0,2)
             # rotate {0: 0, 1: 90, 2: 180, 3: 270}            
-            rotateOption = random.randint(0,3)
+            rotateOption = 0#random.randint(0,3)
             # gamma {0: 0, 1: 1.5, 2: 1.8, 3: 2.2}            
-            gammaOption = random.randint(0,3)
+            gammaOption = 0#random.randint(0,3)
             # elastic {0: none, 1: distort} 
-            elasticOption = 1#random.randint(0,1)
+            elasticOption = 0#random.randint(0,1)
 
             data_image = self.__flip(data_image, flipOption)
             label_image = self.__flip(label_image, flipOption)
@@ -144,16 +143,14 @@ class DataLoader():
         if elasticOption == 1:
             alpha=34
             sigma = random.randint(6, 12)
-            random_state=None
-            if random_state is None:
-                random_state = np.random.RandomState(None)
+            random_state = np.random.RandomState(None)
             shape = image.shape
             dx = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
             dy = gaussian_filter((random_state.rand(*shape) * 2 - 1), sigma, mode="constant", cval=0) * alpha
             x, y = np.meshgrid(np.arange(shape[1]), np.arange(shape[0]))
             indices = np.reshape(y+dy, (-1, 1)), np.reshape(x+dx, (-1, 1))
-            distort_image = map_coordinates(image, indices, order=1, mode='reflect').reshape(image.shape)
-        return distort_image
+            image = map_coordinates(image, indices, order=1, mode='reflect').reshape(image.shape)
+        return image
 
 
 

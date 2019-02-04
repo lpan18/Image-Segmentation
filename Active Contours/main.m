@@ -1,18 +1,33 @@
 clear all;
 
 % Parameters (play around with different images and different parameters)
+% alpha makes the spline act like a flexible membrane,
+% beta lets it behavemore like a thin plate.
+% gamma is the step size
+% kappa regulates the influence of the external forces fx and fy .
 N = 200;
-alpha = 0.4;
-beta = 0.2;
-gamma = 0.5;
-kappa = 0.15;
-Wline = 0.5;
-Wedge = 1.0;
-Wterm = 0.5;
-sigma = 0.5;
-
 % alpha = 0.4;
 % beta = 0.2;
+% gamma = 0.5;
+% kappa = 0.15;
+% Wline = 0.5;
+% Wedge = 1.0;
+% Wterm = 0.5;
+% sigma = 0.5;
+
+% square.jpg
+alpha = 0.4;
+beta = 0.8;
+gamma = 0.5;
+kappa = 0.2;
+Wline = 0;
+Wedge = 1.0;
+Wterm = 0;
+sigma = 0.5;
+
+% star
+% alpha = 0.4;
+% beta = 1.0;
 % gamma = 1.0;
 % kappa = 0.15;
 % Wline = 0;
@@ -21,8 +36,13 @@ sigma = 0.5;
 % sigma = 0.5;
 
 % Load image
+% I = imread('images/circle.jpg');
+I = imread('images/square.jpg');
 % I = imread('images/star.png');
-I = imread('images/circle.jpg');
+% I = imread('images/shape.png');
+% I = imread('images/dental.png');
+% I = imread('images/brain.png');
+
 if (ndims(I) == 3)
     I = rgb2gray(I);
 end

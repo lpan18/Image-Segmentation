@@ -16,7 +16,7 @@ class UNet(nn.Module):
         self.conv6 = upStep(1024, 512)
         self.conv7 = upStep(512, 256)
         self.conv8 = upStep(256, 128)
-        self.conv9 = upStep(128, 64)
+        self.conv9 = upStep(128, 64, withReLU=False)
         self.conv10 = nn.Conv2d(64, n_classes, 1)  # last convolutional layer 
         
         def init_with_xavier(m):
@@ -32,7 +32,6 @@ class UNet(nn.Module):
         self.conv8.apply(init_with_xavier)
         self.conv9.apply(init_with_xavier)
         self.conv10.apply(init_with_xavier)
-
 
     def forward(self, x):
         # todo
@@ -59,6 +58,7 @@ class UNet(nn.Module):
         # print("x7", x7.shape)
         # print("x8", x8.shape)
         # print("x9", x9.shape)
+        # print("x10", x10.shape)
         x = nn.Sigmoid()(x10)
         return x
 
@@ -86,8 +86,8 @@ class upStep(nn.Module):
         # todo
         # Do not forget to concatenate with respective step in contracting path
         # Hint: Do not use ReLU in last convolutional set of up-path (128-64-64) for stability reasons!        
+        self.uppooling = nn.ConvTranspose2d(inC, outC, 2, stride=2)
         if(withReLU):
-            self.uppooling = nn.ConvTranspose2d(inC, outC, 2, stride=2)
             self.upConv = nn.Sequential(
                 nn.Conv2d(inC, outC, 3),
                 nn.BatchNorm2d(outC), 
@@ -96,15 +96,20 @@ class upStep(nn.Module):
                 nn.BatchNorm2d(outC),
                 nn.ReLU(inplace=True),
             )
-        # else:
-        #     self.upConv = nn.Conv2d(inC, outC, 1)
+        else:
+            self.upConv = nn.Sequential(
+                nn.Conv2d(inC, outC, 3),
+                nn.BatchNorm2d(outC), 
+                nn.Conv2d(outC, outC, 3),
+                nn.BatchNorm2d(outC),
+            )
 
     def forward(self, x, x_down):
         # todo
         x = self.uppooling(x)
-        delta_x = x.size()[2] - x_down.size()[2]
-        delta_y = x.size()[3] - x_down.size()[3]
-        x_down = F.pad(x_down, pad=(delta_x // 2, delta_y // 2, delta_x // 2, delta_y // 2), mode='constant', value=0)
+        pad_y = x.size()[2] - x_down.size()[2]
+        pad_x = x.size()[3] - x_down.size()[3]
+        x_down = F.pad(x_down, pad=(pad_x // 2, pad_x - pad_x // 2, pad_y // 2, pad_y - pad_y // 2))
         x = torch.cat([x_down, x], dim=1)
         x = self.upConv(x)
         return x

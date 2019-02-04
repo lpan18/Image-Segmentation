@@ -9,7 +9,7 @@ for i=1:nPoints
     temp = circshift(temp, 1, 2);
 end
 
-[L, U] = lu(gamma .* eye(nPoints) + A);
+[L, U] = lu(A + gamma.* eye(nPoints));
 Ainv = inv(U) * inv(L); 
 end
 

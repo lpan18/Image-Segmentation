@@ -19,8 +19,8 @@ from dataloader import DataLoader
 from torch.autograd import Variable
 import torch.nn.functional as F
 
-WILL_TRAIN = True
-WILL_TEST = False
+WILL_TRAIN = False
+WILL_TEST = True 
 
 def train_net(net,
               epochs=5,
@@ -123,23 +123,18 @@ def softmax(input):
     # todo: implement softmax function
     p = torch.exp(input.float()) / torch.sum(torch.exp(input.float()), 1)
     # p1 = F.softmax(input.float(), 1)
-    # print("p 0", p[0])
-    # print("p1 0", p1[0])
     return p
 
 def cross_entropy(input, targets):
     # todo: implement cross entropy
     # Hint: use the choose function
     # using pad to crop targets
-    # input torch.Size([1, 2, 116, 116])
-    # targets torch.Size([300, 300])
-    delta_x = input.shape[2] - targets.shape[0] 
-    delta_y = input.shape[3] - targets.shape[1]
-    targets = F.pad(targets, pad=(delta_x // 2, delta_y // 2, delta_x // 2, delta_y // 2), mode='constant', value=0)
-    # pred = choose(input, targets)
-    # ce = torch.mean(-torch.log(pred))
-    ce = F.cross_entropy(input.contiguous().view(-1,2), targets.contiguous().view(-1).long())
-    # print("ce: ", ce)
+    pad_y = input.shape[2] - targets.shape[0] 
+    pad_x = input.shape[3] - targets.shape[1]
+    targets = F.pad(targets, pad=(pad_x // 2, pad_x - pad_x // 2, pad_y // 2, pad_y - pad_y // 2))
+    pred = choose(input, targets)
+    ce = torch.mean(-torch.log(pred))
+    # ce = F.cross_entropy(input.contiguous().view(-1,2), targets.contiguous().view(-1).long())
     return ce
 
 # Workaround to use numpy.choose() with PyTorch
@@ -156,7 +151,7 @@ def choose(pred_label, true_labels):
     
 def get_args():
     parser = OptionParser()
-    parser.add_option('-e', '--epochs', dest='epochs', default=5, type='int', help='number of epochs')
+    parser.add_option('-e', '--epochs', dest='epochs', default=3, type='int', help='number of epochs')
     parser.add_option('-c', '--n-classes', dest='n_classes', default=2, type='int', help='number of classes')
     parser.add_option('-d', '--data-dir', dest='data_dir', default='data/cells/', help='data directory')
     parser.add_option('-g', '--gpu', action='store_true', dest='gpu', default=False, help='use cuda')
@@ -187,8 +182,9 @@ if __name__ == '__main__':
 
     if WILL_TEST:
         testNet = UNet(n_classes=args.n_classes)
-        state_dict = torch.load('data/cells/checkpoints/CP2.pth')
+        state_dict = torch.load('data/cells/checkpoints/CP1.pth')
         testNet.load_state_dict(state_dict)
+        testNet.cuda()
         test_net(testNet=testNet, 
             gpu=args.gpu,
             data_dir=args.data_dir)
