@@ -1,16 +1,16 @@
 import os
 from os.path import isdir, exists, abspath, join
-
+import torchvision.transforms as transforms
 import random
 import numpy as np
 from PIL import Image
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 from scipy.ndimage.filters import gaussian_filter
 from scipy.ndimage.interpolation import map_coordinates
 
 class DataLoader():
-    def __init__(self, root_dir='data/cells/', batch_size=1, test_percent=.1):
+    def __init__(self, root_dir='data/cells/', batch_size=1, test_percent=.3):
         self.mode = 'train'
         self.batch_size = batch_size
         self.test_percent = test_percent
@@ -37,7 +37,7 @@ class DataLoader():
             # todo: load images and labels
             # hint: scale images between 0 and 1
             # hint: if training takes too long or memory overflow, reduce image size!
-            resized_size = 300 #572
+            resized_size = 572
             # load images
             data_path = self.data_files[current]
             # print("data_path = ", data_path)
@@ -48,18 +48,17 @@ class DataLoader():
             label_path = self.label_files[current]
             label_image = Image.open(label_path)
             label_image = label_image.resize((resized_size, resized_size))
-
             current += 1
 
             # data augumentation
-            # flip {0: none, 1: horizontal, 2: vertical, 3: both}
-            flipOption = 0#random.randint(0,3)
+            # flip {0: none, 1: horizontal, 2: vertical}
+            flipOption = 0#random.randint(0,2)
             # zoom {0: none, 1: 1/0.95, 2: 1/0.9}
             zoomOption = 0#random.randint(0,2)
-            # rotate {0: 0, 1: 90, 2: 180, 3: 270}            
-            rotateOption = 0#random.randint(0,3)
-            # gamma {0: 0, 1: 1.5, 2: 1.8, 3: 2.2}            
-            gammaOption = 0#random.randint(0,3)
+            # rotate {0: 0, 1: 90, 2: 180}            
+            rotateOption = 0#random.randint(0,2)
+            # gamma {0: 0, 1: 0.8}            
+            gammaOption = random.randint(0,1)
             # elastic {0: none, 1: distort} 
             elasticOption = 0#random.randint(0,1)
 
@@ -71,15 +70,14 @@ class DataLoader():
             
             data_image = self.__rotate(data_image, rotateOption)
             label_image = self.__rotate(label_image, rotateOption)
-            
+
+            data_image = self.__gamma(data_image, gammaOption)
+
             # # normalization
             data_image = np.asarray(data_image, dtype=np.float32) / 255.
             # # min_, max_ = float(np.min(data_image)), float(np.max(data_image))
             # # data_image = (data_image - min_) / (max_ - min_)  
             label_image = np.asarray(label_image, dtype=np.float32)
-            
-            data_image = self.__gamma(data_image, gammaOption)
-            label_image = self.__gamma(label_image, gammaOption)
             
             data_image = self.__elastic_deform(data_image, elasticOption)
             label_image = self.__elastic_deform(label_image, elasticOption)
@@ -99,9 +97,6 @@ class DataLoader():
         if flipOption == 1:
             image = image.transpose(Image.FLIP_LEFT_RIGHT)
         elif flipOption == 2:
-            image = image.transpose(Image.FLIP_TOP_BOTTOM)
-        elif flipOption == 3:
-            image = image.transpose(Image.FLIP_LEFT_RIGHT)
             image = image.transpose(Image.FLIP_TOP_BOTTOM)
         return image
 
@@ -123,20 +118,13 @@ class DataLoader():
             image = image.transpose(Image.ROTATE_90)
         elif rotateOption == 2:
             image = image.transpose(Image.ROTATE_180)
-        elif rotateOption == 3:
-            image = image.transpose(Image.ROTATE_270)
-            image = image.transpose(Image.ROTATE_270)
         return image
 
     def __gamma(self, image, gammaOption):
         gamma = 1
         if gammaOption == 1:
-            gamma = 1.5
-        elif gammaOption == 2:
-            gamma = 1.8
-        elif gammaOption == 3:
-            gamma = 2.2
-        image = image ** (1 / gamma)
+            gamma = 0.8
+        image = transforms.functional.adjust_gamma(image, gamma, gain=1)
         return image
 
     def __elastic_deform(self, image, elasticOption):
@@ -153,14 +141,13 @@ class DataLoader():
         return image
 
 
-
 # Test dataloader
 # loader = DataLoader('data/cells/')
 # for i, (img, label) in enumerate(loader):
-#     figs, axes = plt.subplots(1, 2)
-#     axes[0].imshow(img)
-#     axes[1].imshow(label)
-#     plt.show()
-#     break
-
+#    figs, axes = plt.subplots(1, 2)
+#    axes[0].imshow(img)
+#    axes[1].imshow(label)
+#    plt.show()
+#    if(i==3): 
+#        break
 

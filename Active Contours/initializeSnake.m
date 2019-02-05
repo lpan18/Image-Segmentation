@@ -29,7 +29,5 @@ y(y<1) = 1;
 
 hold on
 
-plot(xInit,yInit,'ro',x,y,'b.');
-
 end
 

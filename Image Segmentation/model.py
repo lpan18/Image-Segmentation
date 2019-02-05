@@ -19,20 +19,6 @@ class UNet(nn.Module):
         self.conv9 = upStep(128, 64, withReLU=False)
         self.conv10 = nn.Conv2d(64, n_classes, 1)  # last convolutional layer 
         
-        def init_with_xavier(m):
-            if isinstance(m, nn.Conv2d):
-                nn.init.xavier_uniform_(m.weight)
-        self.conv1.apply(init_with_xavier)
-        self.conv2.apply(init_with_xavier)
-        self.conv3.apply(init_with_xavier)
-        self.conv4.apply(init_with_xavier)
-        self.conv5.apply(init_with_xavier)
-        self.conv6.apply(init_with_xavier)
-        self.conv7.apply(init_with_xavier)
-        self.conv8.apply(init_with_xavier)
-        self.conv9.apply(init_with_xavier)
-        self.conv10.apply(init_with_xavier)
-
     def forward(self, x):
         # todo
         x1 = self.conv1(x)
@@ -43,23 +29,13 @@ class UNet(nn.Module):
         p3 = self.down_pooling(x3)
         x4 = self.conv4(p3)
         p4 = self.down_pooling(x4)
-        # print("p1", p1.shape)
-        # print("p2", p2.shape)
-        # print("p3", p3.shape)
-        # print("p4", p4.shape)
         x5 = self.conv5(p4)
         x6 = self.conv6(x5,x4)
         x7 = self.conv7(x6,x3)
         x8 = self.conv8(x7,x2)
         x9 = self.conv9(x8,x1)
         x10 = self.conv10(x9)
-        # print("x5", x5.shape)
-        # print("x6", x6.shape)
-        # print("x7", x7.shape)
-        # print("x8", x8.shape)
-        # print("x9", x9.shape)
-        # print("x10", x10.shape)
-        x = nn.Sigmoid()(x10)
+        x = torch.sigmoid(x10)
         return x
 
 class downStep(nn.Module):

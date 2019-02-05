@@ -15,14 +15,14 @@ N = 200;
 % Wterm = 0.5;
 % sigma = 0.5;
 
-% square.jpg
+% try different parameters
 alpha = 0.4;
-beta = 0.8;
-gamma = 0.5;
-kappa = 0.2;
-Wline = 0;
+beta = 0.2;
+gamma = 0.3;
+kappa = 0.1;
+Wline = 0.5;
 Wedge = 1.0;
-Wterm = 0;
+Wterm = 0.5;
 sigma = 0.5;
 
 % star
@@ -37,9 +37,9 @@ sigma = 0.5;
 
 % Load image
 % I = imread('images/circle.jpg');
-I = imread('images/square.jpg');
+% I = imread('images/square.jpg');
 % I = imread('images/star.png');
-% I = imread('images/shape.png');
+I = imread('images/shape.png');
 % I = imread('images/dental.png');
 % I = imread('images/brain.png');
 

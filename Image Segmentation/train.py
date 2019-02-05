@@ -20,10 +20,10 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 
 WILL_TRAIN = False
-WILL_TEST = True 
+WILL_TEST = True
 
 def train_net(net,
-              epochs=5,
+              epochs=3,
               data_dir='data/cells/',
               n_classes=2,
               lr=0.1,
@@ -37,7 +37,7 @@ def train_net(net,
     optimizer = optim.SGD(net.parameters(),
                             lr=lr,
                             momentum=0.99,
-                            weight_decay=0.0005)
+                            weight_decay=0.005)
 
     for epoch in range(epochs):
         print('Epoch %d/%d' % (epoch + 1, epochs))
@@ -59,14 +59,7 @@ def train_net(net,
             optimizer.zero_grad()
             # todo: get prediction and getLoss()
             pred_label = net(img_torch)
-            # # crop target_label
-            # crop_start = np.int64((shape[0] - pred_label.shape[2])/2)
-            # crop_end = crop_start + pred_label.shape[2]
-            # label = label[crop_start:crop_end, crop_start:crop_end]
             target_label = torch.from_numpy(label).float()
-
-            if gpu:
-                target_label = Variable(target_label.cuda())
             
             loss = getLoss(pred_label, target_label)
             epoch_loss += loss.item()
@@ -77,8 +70,8 @@ def train_net(net,
             loss.backward()
             optimizer.step()
 
-        if((epoch + 1) % 1 == 0) :   
-            torch.save(net.state_dict(), join(data_dir, 'checkpoints') + '/CP%d.pth' % (epoch + 1))
+        if((epoch + 1) % 3 == 0) :   
+            torch.save(net.state_dict(), join(data_dir, 'checkpoints4') + '/CP%d.pth' % (epoch + 1))
             print('Checkpoint %d saved !' % (epoch + 1))
             print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
 
@@ -99,14 +92,10 @@ def test_net(testNet,
             pred = testNet(img_torch)
             pred_sm = softmax(pred)
             _,pred_label = torch.max(pred_sm,1)
-            result = pred_label.cpu().detach().numpy().squeeze()*255
-            # == test ==
-            # print(result)
-            # for i in range(pred_label.shape[0]):
-            #     for j in range(pred_label.shape[0]):
-            #         if pred_label[i][j] != 1:
-            #             print("i=", i, " j=", j, "pred_label[i][j]", pred_label[i][j])
-                
+            startY = (img.shape[0] - pred_label.shape[1])//2
+            startX = (img.shape[1] - pred_label.shape[2])//2
+            img = img[startY:startY+pred_label.shape[1] ,startX:startX+pred_label.shape[2]]
+            label = label[startY:startY+pred_label.shape[1] ,startX:startX+pred_label.shape[2]]
             plt.subplot(1, 3, 1)
             plt.imshow(img*255.)
             plt.subplot(1, 3, 2)
@@ -182,7 +171,7 @@ if __name__ == '__main__':
 
     if WILL_TEST:
         testNet = UNet(n_classes=args.n_classes)
-        state_dict = torch.load('data/cells/checkpoints/CP1.pth')
+        state_dict = torch.load('data/cells/checkpoints_all_0.3/CP18.pth')
         testNet.load_state_dict(state_dict)
         testNet.cuda()
         test_net(testNet=testNet, 

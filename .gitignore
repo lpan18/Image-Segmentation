@@ -1,5 +1,6 @@
 Image Segmentation/data/cells
 .vscode
+Results
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
