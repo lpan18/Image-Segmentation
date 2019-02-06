@@ -79,8 +79,8 @@ def train_net(net,
 def test_net(testNet, 
             gpu=True,
             data_dir='data/cells/'):
-    net_folder = 'checkpoints_no_0.3_lr0.001/'
-    net_name = 'CP30'
+    net_folder = 'checkpoints_all_0.3_lr0.1/'
+    net_name = 'CP12'
     state_dict = torch.load(data_dir + net_folder + net_name + '.pth')
     testNet.load_state_dict(state_dict)
     testNet.cuda()
@@ -109,6 +109,7 @@ def test_net(testNet,
             N = label.shape[0] * label.shape[1]
             accuracy = np.sum(label == pred_label) / N
             f.write(str(i) + ' ' + str(accuracy) + '\n')
+                
             plt.subplot(1, 3, 1)
             plt.imshow(img*255.)
             plt.subplot(1, 3, 2)

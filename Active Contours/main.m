@@ -18,10 +18,10 @@ N = 200;
 % try different parameters
 alpha = 0.4;
 beta = 0.2;
-gamma = 0.3;
-kappa = 0.1;
+gamma = 0.5;
+kappa = 0.5;
 Wline = 0.5;
-Wedge = 1.0;
+Wedge = 1;
 Wterm = 0.5;
 sigma = 0.5;
 
@@ -42,6 +42,7 @@ sigma = 0.5;
 I = imread('images/shape.png');
 % I = imread('images/dental.png');
 % I = imread('images/brain.png');
+% I = imread('images/vase.tif');
 
 if (ndims(I) == 3)
     I = rgb2gray(I);
