@@ -33,7 +33,9 @@ class DataLoader():
         elif self.mode == 'test':
             current = n_train
             endId = len(self.data_files)
-        while current < endId:
+        indexes = [i for i in range(current, endId)]
+        # random.shuffle(indexes)        
+        for current in indexes:
             # todo: load images and labels
             # hint: scale images between 0 and 1
             # hint: if training takes too long or memory overflow, reduce image size!
@@ -48,42 +50,10 @@ class DataLoader():
             label_path = self.label_files[current]
             label_image = Image.open(label_path)
             label_image = label_image.resize((resized_size, resized_size))
-            current += 1
 
-            # data augumentation
-            # flip {0: none, 1: horizontal, 2: vertical}
-            flipOption = 0#random.randint(0,2)
-            # zoom {0: none, 1: 1/0.95, 2: 1/0.9}
-            zoomOption = 0#random.randint(0,2)
-            # rotate {0: 0, 1: 90, 2: 180}            
-            rotateOption = 0#random.randint(0,2)
-            # gamma {0: 0, 1: 0.8}            
-            gammaOption = random.randint(0,1)
-            # elastic {0: none, 1: distort} 
-            elasticOption = 0#random.randint(0,1)
+            # apply data augmentation and normalization
+            data_image, label_image = self.__applyDataAugmentation(data_image, label_image)
 
-            data_image = self.__flip(data_image, flipOption)
-            label_image = self.__flip(label_image, flipOption)
-            
-            data_image = self.__zoom(data_image, zoomOption)
-            label_image = self.__zoom(label_image, zoomOption)
-            
-            data_image = self.__rotate(data_image, rotateOption)
-            label_image = self.__rotate(label_image, rotateOption)
-
-            data_image = self.__gamma(data_image, gammaOption)
-
-            # # normalization
-            data_image = np.asarray(data_image, dtype=np.float32) / 255.
-            # # min_, max_ = float(np.min(data_image)), float(np.max(data_image))
-            # # data_image = (data_image - min_) / (max_ - min_)  
-            label_image = np.asarray(label_image, dtype=np.float32)
-            
-            data_image = self.__elastic_deform(data_image, elasticOption)
-            label_image = self.__elastic_deform(label_image, elasticOption)
-            
-            # print("data_image", data_image[0])
-            # print("label_image", label_image[0])
             yield (data_image, label_image)
 
     def setMode(self, mode):
@@ -93,6 +63,41 @@ class DataLoader():
         data_length = len(self.data_files)
         return np.int_(data_length - np.floor(data_length * self.test_percent))
 
+    # data augumentation function
+    def __applyDataAugmentation(self, data_image, label_image):
+        # flip {0: none, 1: horizontal, 2: vertical}
+        flipOption = 0#random.randint(0,2)
+        # zoom {0: none, 1: 1/0.95, 2: 1/0.9}
+        zoomOption = 0#random.randint(0,2)
+        # rotate {0: 0, 1: 90, 2: 180}            
+        rotateOption = 0#random.randint(0,2)
+        # gamma {0: 0, 1: 0.8}            
+        gammaOption = 0#random.randint(0,1)
+        # elastic {0: none, 1: distort} 
+        elasticOption = 0#random.randint(0,1)
+
+        data_image = self.__flip(data_image, flipOption)
+        label_image = self.__flip(label_image, flipOption)
+        
+        data_image = self.__zoom(data_image, zoomOption)
+        label_image = self.__zoom(label_image, zoomOption)
+        
+        data_image = self.__rotate(data_image, rotateOption)
+        label_image = self.__rotate(label_image, rotateOption)
+
+        data_image = self.__gamma(data_image, gammaOption)
+        
+        # normalization
+        data_image = np.asarray(data_image, dtype=np.float32) / 255.
+        # min_, max_ = float(np.min(data_image)), float(np.max(data_image))
+        # data_image = (data_image - min_) / (max_ - min_)  
+        label_image = np.asarray(label_image, dtype=np.float32)
+        
+        data_image = self.__elastic_deform(data_image, elasticOption)
+        label_image = self.__elastic_deform(label_image, elasticOption)
+        
+        return data_image, label_image
+            
     def __flip(self, image, flipOption):
         if flipOption == 1:
             image = image.transpose(Image.FLIP_LEFT_RIGHT)

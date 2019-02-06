@@ -73,18 +73,24 @@ def train_net(net,
         if((epoch + 1) % 3 == 0) :   
             torch.save(net.state_dict(), join(data_dir, 'checkpoints4') + '/CP%d.pth' % (epoch + 1))
             print('Checkpoint %d saved !' % (epoch + 1))
-            print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
+        print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
 
 # displays test images with original and predicted masks 
 def test_net(testNet, 
             gpu=True,
             data_dir='data/cells/'):
+    net_folder = 'checkpoints_no_0.3_lr0.001/'
+    net_name = 'CP30'
+    state_dict = torch.load(data_dir + net_folder + net_name + '.pth')
+    testNet.load_state_dict(state_dict)
+    testNet.cuda()
     loader = DataLoader(data_dir)
     loader.setMode('test')
     testNet.eval()
-
+    f = open(data_dir + net_folder + 'accuracy.txt', 'a')
+    f.write(net_name+'\n')
     with torch.no_grad():
-        for _, (img, label) in enumerate(loader):
+        for i, (img, label) in enumerate(loader):
             shape = img.shape
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
             if gpu:
@@ -96,14 +102,23 @@ def test_net(testNet,
             startX = (img.shape[1] - pred_label.shape[2])//2
             img = img[startY:startY+pred_label.shape[1] ,startX:startX+pred_label.shape[2]]
             label = label[startY:startY+pred_label.shape[1] ,startX:startX+pred_label.shape[2]]
+            
+            label = (label - 1)*255.
+            pred_label = pred_label.cpu().detach().numpy().squeeze()*255.
+            
+            N = label.shape[0] * label.shape[1]
+            accuracy = np.sum(label == pred_label) / N
+            f.write(str(i) + ' ' + str(accuracy) + '\n')
             plt.subplot(1, 3, 1)
             plt.imshow(img*255.)
             plt.subplot(1, 3, 2)
-            plt.imshow((label - 1)*255.)
+            plt.imshow(label)
             plt.subplot(1, 3, 3)
-            plt.imshow(pred_label.cpu().detach().numpy().squeeze()*255.)
-            plt.show()
-
+            plt.imshow(pred_label)
+            # plt.show()
+            plt.savefig(data_dir + net_folder + net_name + '_%d.png' % i )
+            plt.close()
+        f.close()
 def getLoss(pred_label, target_label):
     p = softmax(pred_label)
     return cross_entropy(p, target_label)
@@ -171,9 +186,6 @@ if __name__ == '__main__':
 
     if WILL_TEST:
         testNet = UNet(n_classes=args.n_classes)
-        state_dict = torch.load('data/cells/checkpoints_all_0.3/CP18.pth')
-        testNet.load_state_dict(state_dict)
-        testNet.cuda()
         test_net(testNet=testNet, 
             gpu=args.gpu,
             data_dir=args.data_dir)
