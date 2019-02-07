@@ -92,8 +92,6 @@ def test_net(testNet,
     # f.write(net_name+'\n')
     with torch.no_grad():
         for i, (img, label) in enumerate(loader):
-            if(i==3 or i==5 or i==9): 
-                continue
             shape = img.shape
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
             if gpu:
