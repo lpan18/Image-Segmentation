@@ -1,7 +1,11 @@
 Image Segmentation/data/cells
 .vscode
-Results
-
+Active Contours/results
+Active Contours/images
+Project 1 Part 1
+Project 1 Part 2
+report guildlines
+U-Net Convolutional Networks for Biomedical
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

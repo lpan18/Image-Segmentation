@@ -1,4 +1,5 @@
 function [newX, newY] = iterate(Ainv, x, y, Eext, gamma, kappa)
+
 % Get fx and fy
 [fx, fy] = gradient(Eext);
 
