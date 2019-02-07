@@ -66,15 +66,15 @@ class DataLoader():
     # data augumentation function
     def __applyDataAugmentation(self, data_image, label_image):
         # flip {0: none, 1: horizontal, 2: vertical}
-        flipOption = 0#random.randint(0,2)
+        flipOption = random.randint(0,2)
         # zoom {0: none, 1: 1/0.95, 2: 1/0.9}
-        zoomOption = 0#random.randint(0,2)
+        zoomOption = random.randint(0,2)
         # rotate {0: 0, 1: 90, 2: 180}            
-        rotateOption = 0#random.randint(0,2)
+        rotateOption = random.randint(0,2)
         # gamma {0: 0, 1: 0.8}            
-        gammaOption = 0#random.randint(0,1)
+        gammaOption = random.randint(0,1)
         # elastic {0: none, 1: distort} 
-        elasticOption = 0#random.randint(0,1)
+        elasticOption = random.randint(0,1)
 
         data_image = self.__flip(data_image, flipOption)
         label_image = self.__flip(label_image, flipOption)

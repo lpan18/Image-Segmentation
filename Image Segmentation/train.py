@@ -77,20 +77,23 @@ def train_net(net,
 
 # displays test images with original and predicted masks 
 def test_net(testNet, 
-            gpu=True,
+            gpu=False,
             data_dir='data/cells/'):
-    net_folder = 'checkpoints_all_0.3_lr0.1/'
-    net_name = 'CP12'
+    net_folder = 'checkpoints_all_0.3_lr0.001/'
+    net_name = 'CP30'
     state_dict = torch.load(data_dir + net_folder + net_name + '.pth')
     testNet.load_state_dict(state_dict)
     testNet.cuda()
     loader = DataLoader(data_dir)
     loader.setMode('test')
     testNet.eval()
-    f = open(data_dir + net_folder + 'accuracy.txt', 'a')
-    f.write(net_name+'\n')
+    # Open accuracy file
+    # f = open(data_dir + net_folder + 'accuracy.txt', 'a')
+    # f.write(net_name+'\n')
     with torch.no_grad():
         for i, (img, label) in enumerate(loader):
+            if(i==3 or i==5 or i==9): 
+                continue
             shape = img.shape
             img_torch = torch.from_numpy(img.reshape(1,1,shape[0],shape[1])).float()
             if gpu:
@@ -105,21 +108,21 @@ def test_net(testNet,
             
             label = (label - 1)*255.
             pred_label = pred_label.cpu().detach().numpy().squeeze()*255.
-            
-            N = label.shape[0] * label.shape[1]
-            accuracy = np.sum(label == pred_label) / N
-            f.write(str(i) + ' ' + str(accuracy) + '\n')
-                
+            # compute accuracy and write to file
+            # N = label.shape[0] * label.shape[1]
+            # accuracy = np.sum(label == pred_label) / N
+            # f.write(str(i) + ' ' + str(accuracy) + '\n')                
             plt.subplot(1, 3, 1)
             plt.imshow(img*255.)
             plt.subplot(1, 3, 2)
             plt.imshow(label)
             plt.subplot(1, 3, 3)
             plt.imshow(pred_label)
-            # plt.show()
-            plt.savefig(data_dir + net_folder + net_name + '_%d.png' % i )
+            plt.show()
+            # save the predicted results
+            # plt.savefig(data_dir + net_folder + net_name + '_%d.png' % i )
             plt.close()
-        f.close()
+        # f.close()
 def getLoss(pred_label, target_label):
     p = softmax(pred_label)
     return cross_entropy(p, target_label)

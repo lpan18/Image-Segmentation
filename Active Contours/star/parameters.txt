@@ -1,0 +1,783 @@
+play round85
+alpha=0.90488
+beta=0.97975
+gamma=0.43887
+kappa=0.05556
+Wline=0.25806
+Wedge=0.40872
+Wterm=0.5949
+
+play round85
+alpha=0.26221
+beta=0.60284
+gamma=0.71122
+kappa=0.11087
+Wline=0.11742
+Wedge=0.29668
+Wterm=0.31878
+
+play round1
+alpha=0.10571
+beta=0.14204
+gamma=0.16646
+kappa=0.31048
+Wline=0.57371
+Wedge=0.052078
+Wterm=0.9312
+
+play round1
+alpha=0.72866
+beta=0.73784
+gamma=0.063405
+kappa=0.43022
+Wline=0.93441
+Wedge=0.9844
+Wterm=0.85894
+
+play round1
+alpha=0.78556
+beta=0.51338
+gamma=0.1776
+kappa=0.19929
+Wline=0.13393
+Wedge=0.03089
+Wterm=0.93914
+
+play round1
+alpha=0.30131
+beta=0.29553
+gamma=0.33294
+kappa=0.23353
+Wline=0.6482
+Wedge=0.025228
+Wterm=0.84221
+
+play round2
+alpha=0.55903
+beta=0.8541
+gamma=0.34788
+kappa=0.22301
+Wline=0.054239
+Wedge=0.17711
+Wterm=0.66281
+
+play round3
+alpha=0.33083
+beta=0.89849
+gamma=0.11816
+kappa=0.49421
+Wline=0.53998
+Wedge=0.70692
+Wterm=0.99949
+
+play round4
+alpha=0.28785
+beta=0.41452
+gamma=0.46484
+kappa=0.38198
+Wline=0.8182
+Wedge=0.10022
+Wterm=0.17812
+
+play round5
+alpha=0.35963
+beta=0.056705
+gamma=0.52189
+kappa=0.16792
+Wline=0.17567
+Wedge=0.20895
+Wterm=0.90515
+
+play round6
+alpha=0.67539
+beta=0.46847
+gamma=0.91213
+kappa=0.052006
+Wline=0.74555
+Wedge=0.73627
+Wterm=0.56186
+
+play round7
+alpha=0.18419
+beta=0.59721
+gamma=0.29994
+kappa=0.067061
+Wline=0.2126
+Wedge=0.89494
+Wterm=0.071453
+
+play round8
+alpha=0.24249
+beta=0.053754
+gamma=0.44172
+kappa=0.0066416
+Wline=0.89719
+Wedge=0.19666
+Wterm=0.093371
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round32
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round32
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round33
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round32
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.4
+beta=0.2
+gamma=0.5
+kappa=0.15
+Wline=0.5
+Wedge=1
+Wterm=0.5
+
+play round31
+alpha=0.30737
+beta=0.45606
+gamma=0.10167
+kappa=0.49769
+Wline=0.33209
+Wedge=0.29735
+Wterm=0.062045
+
+play round31
+alpha=0.29824
+beta=0.046351
+gamma=0.50543
+kappa=0.38071
+Wline=0.63107
+Wedge=0.089892
+Wterm=0.080862
+
+play round32
+alpha=0.77724
+beta=0.90513
+gamma=0.53377
+kappa=0.054577
+Wline=0.82581
+Wedge=0.3381
+Wterm=0.29397
+
+play round33
+alpha=0.74631
+beta=0.010337
+gamma=0.048447
+kappa=0.33396
+Wline=0.60347
+Wedge=0.5261
+Wterm=0.72971
+
+play round34
+alpha=0.70725
+beta=0.78138
+gamma=0.28798
+kappa=0.34627
+Wline=0.55667
+Wedge=0.39652
+Wterm=0.061591
+
+play round35
+alpha=0.78018
+beta=0.33758
+gamma=0.60787
+kappa=0.37063
+Wline=0.10481
+Wedge=0.12789
+Wterm=0.54954
+
+play round36
+alpha=0.48523
+beta=0.89048
+gamma=0.79896
+kappa=0.36717
+Wline=0.051332
+Wedge=0.072885
+Wterm=0.088527
+
+play round37
+alpha=0.79835
+beta=0.94301
+gamma=0.68372
+kappa=0.066041
+Wline=0.72272
+Wedge=0.11035
+Wterm=0.11749
+
+play round38
+alpha=0.64072
+beta=0.32881
+gamma=0.65381
+kappa=0.37457
+Wline=0.58319
+Wedge=0.74003
+Wterm=0.23483
+
+play round39
+alpha=0.73496
+beta=0.9706
+gamma=0.86693
+kappa=0.043117
+Wline=0.36644
+Wedge=0.3692
+Wterm=0.68503
+
+play round40
+alpha=0.59794
+beta=0.78936
+gamma=0.36765
+kappa=0.10301
+Wline=0.086667
+Wedge=0.77193
+Wterm=0.20567
+
+play round41
+alpha=0.38827
+beta=0.55178
+gamma=0.22895
+kappa=0.32097
+Wline=0.48448
+Wedge=0.15185
+Wterm=0.78193
+
+play round42
+alpha=0.10061
+beta=0.29407
+gamma=0.23737
+kappa=0.26544
+Wline=0.091499
+Wedge=0.40532
+Wterm=0.10485
+
+play round43
+alpha=0.11228
+beta=0.78443
+gamma=0.29157
+kappa=0.30177
+Wline=0.96442
+Wedge=0.43248
+Wterm=0.69475
+
+play round44
+alpha=0.7581
+beta=0.43264
+gamma=0.6555
+kappa=0.054878
+Wline=0.93376
+Wedge=0.18746
+Wterm=0.26618
+
+play round45
+alpha=0.79783
+beta=0.4876
+gamma=0.76896
+kappa=0.198
+Wline=0.27294
+Wedge=0.037235
+Wterm=0.67329
+
+play round46
+alpha=0.42956
+beta=0.45174
+gamma=0.60986
+kappa=0.029702
+Wline=0.31581
+Wedge=0.77272
+Wterm=0.69643
+
+play round47
+alpha=0.12533
+beta=0.13015
+gamma=0.092352
+kappa=0.0039101
+Wline=0.42311
+Wedge=0.65557
+Wterm=0.72292
+
+play round48
+alpha=0.53121
+beta=0.10882
+gamma=0.63177
+kappa=0.06325
+Wline=0.1343
+Wedge=0.098594
+Wterm=0.14203
+
+play round49
+alpha=0.16825
+beta=0.19625
+gamma=0.31748
+kappa=0.15821
+Wline=0.21756
+Wedge=0.25104
+Wterm=0.89292
+
+play round50
+alpha=0.70322
+beta=0.55574
+gamma=0.18443
+kappa=0.10602
+Wline=0.077347
+Wedge=0.9138
+Wterm=0.70672
+
+play round51
+alpha=0.55779
+beta=0.31343
+gamma=0.1662
+kappa=0.31125
+Wline=0.98793
+Wedge=0.17043
+Wterm=0.25779
+
+play round52
+alpha=0.3968
+beta=0.073995
+gamma=0.6841
+kappa=0.20119
+Wline=0.98284
+Wedge=0.40218
+Wterm=0.62067
+
+play round53
+alpha=0.15437
+beta=0.38135
+gamma=0.16113
+kappa=0.37906
+Wline=0.87111
+Wedge=0.35078
+Wterm=0.68554
+
+play round54
+alpha=0.29415
+beta=0.53063
+gamma=0.83242
+kappa=0.29875
+Wline=0.33531
+Wedge=0.29923
+Wterm=0.45259
+
+play round55
+alpha=0.42265
+beta=0.35961
+gamma=0.55832
+kappa=0.37127
+Wline=0.42433
+Wedge=0.42936
+Wterm=0.12487
+
+play round56
+alpha=0.024434
+beta=0.29019
+gamma=0.31752
+kappa=0.32685
+Wline=0.95694
+Wedge=0.93573
+Wterm=0.45789
+
+play round57
+alpha=0.24048
+beta=0.7639
+gamma=0.75933
+kappa=0.37032
+Wline=0.74369
+Wedge=0.10592
+Wterm=0.68156
+
+play round58
+alpha=0.46326
+beta=0.21216
+gamma=0.098519
+kappa=0.41179
+Wline=0.17501
+Wedge=0.16357
+Wterm=0.66599
+
+play round59
+alpha=0.89439
+beta=0.51656
+gamma=0.7027
+kappa=0.076795
+Wline=0.95346
+Wedge=0.54088
+Wterm=0.67973
+
+play round60
+alpha=0.036563
+beta=0.8092
+gamma=0.74862
+kappa=0.060094
+Wline=0.52505
+Wedge=0.32583
+Wterm=0.54645
+
+play round31
+alpha=0.39888
+beta=0.41509
+gamma=0.18074
+kappa=0.12769
+Wline=0.020536
+Wedge=0.92368
+Wterm=0.6537
+
+play round31
+alpha=0.93261
+beta=0.16351
+gamma=0.9211
+kappa=0.39733
+Wline=0.57739
+Wedge=0.44004
+Wterm=0.25761
+
+play round32
+alpha=0.75195
+beta=0.22867
+gamma=0.064187
+kappa=0.38366
+Wline=0.6712
+Wedge=0.71521
+Wterm=0.64206
+
+play round33
+alpha=0.41905
+beta=0.39076
+gamma=0.81614
+kappa=0.15871
+Wline=0.81454
+Wedge=0.78907
+Wterm=0.85226
+
+play round34
+alpha=0.50564
+beta=0.63566
+gamma=0.95089
+kappa=0.22198
+Wline=0.060019
+Wedge=0.86675
+Wterm=0.63119
+
+play round35
+alpha=0.35507
+beta=0.997
+gamma=0.22417
+kappa=0.32623
+Wline=0.60499
+Wedge=0.38725
+Wterm=0.14219
+
+play round36
+alpha=0.025135
+beta=0.42111
+gamma=0.1841
+kappa=0.36289
+Wline=0.37036
+Wedge=0.84156
+Wterm=0.73423
+
+play round37
+alpha=0.57103
+beta=0.17686
+gamma=0.95738
+kappa=0.13266
+Wline=0.92458
+Wedge=0.22377
+Wterm=0.37356
+
+play round38
+alpha=0.0875
+beta=0.64012
+gamma=0.18062
+kappa=0.022526
+Wline=0.72317
+Wedge=0.34744
+Wterm=0.66062
+
+play round39
+alpha=0.38387
+beta=0.62735
+gamma=0.02165
+kappa=0.45528
+Wline=0.80056
+Wedge=0.74585
+Wterm=0.81311
+
+play round40
+alpha=0.38331
+beta=0.61728
+gamma=0.57549
+kappa=0.26503
+Wline=0.27507
+Wedge=0.24863
+Wterm=0.45164
+
+play round41
+alpha=0.22771
+beta=0.80445
+gamma=0.9861
+kappa=0.014996
+Wline=0.53566
+Wedge=0.087077
+Wterm=0.80209
+
+play round42
+alpha=0.98914
+beta=0.066946
+gamma=0.9394
+kappa=0.0090888
+Wline=0.68384
+Wedge=0.78374
+Wterm=0.53414
+
+play round43
+alpha=0.88536
+beta=0.899
+gamma=0.62594
+kappa=0.068934
+Wline=0.2178
+Wedge=0.18214
+Wterm=0.04182
+
+play round44
+alpha=0.10694
+beta=0.61644
+gamma=0.93966
+kappa=0.17723
+Wline=0.41063
+Wedge=0.98435
+Wterm=0.94558
+
+play round45
+alpha=0.67664
+beta=0.9883
+gamma=0.76683
+kappa=0.16835
+Wline=0.66238
+Wedge=0.24417
+Wterm=0.29551
+
+play round46
+alpha=0.68018
+beta=0.52785
+gamma=0.41159
+kappa=0.30132
+Wline=0.75052
+Wedge=0.58353
+Wterm=0.55179
+
+play round47
+alpha=0.58357
+beta=0.51182
+gamma=0.082593
+kappa=0.35979
+Wline=0.99616
+Wedge=0.35453
+Wterm=0.97126
+
+play round48
+alpha=0.34645
+beta=0.88654
+gamma=0.45469
+kappa=0.20671
+Wline=0.21773
+Wedge=0.12565
+Wterm=0.30891
+
+play round49
+alpha=0.7261
+beta=0.78287
+gamma=0.69379
+kappa=0.0049011
+Wline=0.84321
+Wedge=0.92233
+Wterm=0.77095
+
+play round50
+alpha=0.04266
+beta=0.37819
+gamma=0.70434
+kappa=0.36476
+Wline=0.22428
+Wedge=0.26905
+Wterm=0.67303
+
+play round51
+alpha=0.47749
+beta=0.62372
+gamma=0.23644
+kappa=0.088562
+Wline=0.82964
+Wedge=0.76692
+Wterm=0.93448
+
+play round52
+alpha=0.10789
+beta=0.18223
+gamma=0.099095
+kappa=0.24488
+Wline=0.19325
+Wedge=0.89589
+Wterm=0.09909
+
+play round53
+alpha=0.044166
+beta=0.5573
+gamma=0.7725
+kappa=0.15597
+Wline=0.17898
+Wedge=0.33896
+Wterm=0.21015
+
+play round54
+alpha=0.51015
+beta=0.90636
+gamma=0.62892
+kappa=0.050767
+Wline=0.39085
+Wedge=0.054617
+Wterm=0.50128
+
+play round55
+alpha=0.43172
+beta=0.99756
+gamma=0.8116
+kappa=0.24283
+Wline=0.89445
+Wedge=0.13755
+Wterm=0.39
+
+play round56
+alpha=0.92736
+beta=0.91749
+gamma=0.71357
+kappa=0.30917
+Wline=0.34329
+Wedge=0.93603
+Wterm=0.12477
+
+play round57
+alpha=0.73059
+beta=0.64648
+gamma=0.83315
+kappa=0.19914
+Wline=0.74982
+Wedge=0.83522
+Wterm=0.32246
+
+play round58
+alpha=0.55226
+beta=0.97913
+gamma=0.54931
+kappa=0.16521
+Wline=0.61947
+Wedge=0.36064
+Wterm=0.75651
+
+play round59
+alpha=0.4139
+beta=0.49235
+gamma=0.69474
+kappa=0.48637
+Wline=0.32775
+Wedge=0.8378
+Wterm=0.73907
+
+play round60
+alpha=0.95417
+beta=0.031923
+gamma=0.35687
+kappa=0.33133
+Wline=0.2815
+Wedge=0.23038
+Wterm=0.71113
+
