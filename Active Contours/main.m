@@ -19,12 +19,6 @@ sigma = 0.5;
 
 % Load image
 I = imread('images/circle.jpg');
-% I = imread('images/brain.png');
-% I = imread('images/square.jpg');
-% I = imread('images/star.png');
-% I = imread('images/shape.png');
-% I = imread('images/dental.png');
-% I = imread('images/vase.tif');
 
 if (ndims(I) == 3)
     I = rgb2gray(I);
