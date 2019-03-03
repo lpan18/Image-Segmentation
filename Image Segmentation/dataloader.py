@@ -150,6 +150,7 @@ class DataLoader():
 # loader = DataLoader('data/cells/')
 # for i, (img, label) in enumerate(loader):
 #    figs, axes = plt.subplots(1, 2)
+#    print(img.shape)
 #    axes[0].imshow(img)
 #    axes[1].imshow(label)
 #    plt.show()

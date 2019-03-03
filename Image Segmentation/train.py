@@ -19,8 +19,8 @@ from dataloader import DataLoader
 from torch.autograd import Variable
 import torch.nn.functional as F
 
-WILL_TRAIN = False
-WILL_TEST = True
+WILL_TRAIN = True
+WILL_TEST = False
 
 def train_net(net,
               epochs=3,
@@ -71,7 +71,7 @@ def train_net(net,
             optimizer.step()
 
         if((epoch + 1) % 3 == 0) :   
-            torch.save(net.state_dict(), join(data_dir, 'checkpoints4') + '/CP%d.pth' % (epoch + 1))
+            torch.save(net.state_dict(), join(data_dir, 'checkpoints') + '/CP%d.pth' % (epoch + 1))
             print('Checkpoint %d saved !' % (epoch + 1))
         print('Epoch %d finished! - Loss: %.6f' % (epoch+1, epoch_loss / i))
 
@@ -79,7 +79,7 @@ def train_net(net,
 def test_net(testNet, 
             gpu=False,
             data_dir='data/cells/'):
-    net_folder = 'checkpoints_all_0.3_lr0.001/'
+    net_folder = 'checkpoints/'
     net_name = 'CP30'
     state_dict = torch.load(data_dir + net_folder + net_name + '.pth')
     testNet.load_state_dict(state_dict)
